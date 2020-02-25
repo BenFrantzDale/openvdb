@@ -847,10 +847,10 @@ getHalfFloat(std::ios_base& strm)
 {
     /// @todo get from StreamMetadata
     if (strm.iword(sStreamState.halfFloat) != 0) {
-#ifdef OPENVDB_WITH_OPENEXR_HALF
+#ifdef OPENVDB_USE_OPENEXR_HALF
         return StoredAsHalf::yes;
 #else
-        throw std::runtime_error("half float not supported");
+	OPENVDB_THROW(IoError, "Half-float is not supported");
 #endif
     }
       return StoredAsHalf::no;

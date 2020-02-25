@@ -6,8 +6,8 @@
 
 #include "version.h"
 #include "Platform.h"
-//#define OPENVDB_WITH_OPENEXR_HALF
-#ifdef OPENVDB_WITH_OPENEXR_HALF
+//#define OPENVDB_USE_OPENEXR_HALF
+#ifdef OPENVDB_USE_OPENEXR_HALF
 #include <OpenEXR/half.h>
 #endif
 #include <openvdb/math/Math.h>
@@ -43,7 +43,7 @@ using Real    = double;
 using Vec2R = math::Vec2<Real>;
 using Vec2I = math::Vec2<Index32>;
 using Vec2f = math::Vec2<float>;
-#ifdef OPENVDB_WITH_OPENEXR_HALF
+#ifdef OPENVDB_USE_OPENEXR_HALF
 using Vec2H = math::Vec2<half>;
 #endif
     using math::Vec2i;
@@ -54,7 +54,7 @@ using math::Vec2d;
 using Vec3R = math::Vec3<Real>;
 using Vec3I = math::Vec3<Index32>;
 using Vec3f = math::Vec3<float>;
-#ifdef OPENVDB_WITH_OPENEXR_HALF
+#ifdef OPENVDB_USE_OPENEXR_HALF
 using Vec3H = math::Vec3<half>;
 #endif
 using Vec3U8 = math::Vec3<uint8_t>;
@@ -71,7 +71,7 @@ using BBoxd = math::BBox<Vec3d>;
 using Vec4R = math::Vec4<Real>;
 using Vec4I = math::Vec4<Index32>;
 using Vec4f = math::Vec4<float>;
-#ifdef OPENVDB_WITH_OPENEXR_HALF
+#ifdef OPENVDB_USE_OPENEXR_HALF
 using Vec4H = math::Vec4<half>;
 #endif
 using math::Vec4i;
@@ -96,12 +96,12 @@ using math::Quatd;
 // Type-safe flag for reading/writing as half.
 enum class StoredAsHalf {
     no,
-#ifdef OPENVDB_WITH_OPENEXR_HALF
+#ifdef OPENVDB_USE_OPENEXR_HALF
     yes
 #endif
 };
 
-#ifdef OPENVDB_WITH_OPENEXR_HALF
+#ifdef OPENVDB_USE_OPENEXR_HALF
 #define OPENVDB_DEFAULT_STORAGE_IF_NO_OPENEXR_HALF
 #else
 #define OPENVDB_DEFAULT_STORAGE_IF_NO_OPENEXR_HALF = StoredAsHalf::no
@@ -540,7 +540,7 @@ enum MergePolicy {
 template<typename T> const char* typeNameAsString()                 { return typeid(T).name(); }
 template<> inline const char* typeNameAsString<bool>()              { return "bool"; }
 template<> inline const char* typeNameAsString<ValueMask>()         { return "mask"; }
-#ifdef OPENVDB_WITH_OPENEXR_HALF
+#ifdef OPENVDB_USE_OPENEXR_HALF
 template<> inline const char* typeNameAsString<half>()              { return "half"; }
 #endif
 template<> inline const char* typeNameAsString<float>()             { return "float"; }

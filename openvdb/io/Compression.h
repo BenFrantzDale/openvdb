@@ -167,7 +167,7 @@ struct MaskCompress
 ////////////////////////////////////////
 
 
-#ifdef OPENVDB_WITH_OPENEXR_HALF
+#ifdef OPENVDB_USE_OPENEXR_HALF
 /// @brief RealToHalf and its specializations define a mapping from
 /// floating-point data types to analogous half float types.
 template<typename T>
@@ -286,7 +286,7 @@ readData<std::string>(std::istream& is, std::string* data, Index count, uint32_t
     }
 }
 
-#ifdef OPENVDB_WITH_OPENEXR_HALF
+#ifdef OPENVDB_USE_OPENEXR_HALF
 /// HalfReader wraps a static function, read(), that is analogous to readData(), above,
 /// except that it is partially specialized for floating-point types in order to promote
 /// 16-bit half float values to full float.  A wrapper class is required because
@@ -387,7 +387,7 @@ writeData<std::string>(std::ostream& os, const std::string* data, Index count,
     }
 }
 
-#ifdef OPENVDB_WITH_OPENEXR_HALF
+#ifdef OPENVDB_USE_OPENEXR_HALF
 /// HalfWriter wraps a static function, write(), that is analogous to writeData(), above,
 /// except that it is partially specialized for floating-point types in order to quantize
 /// floating-point values to 16-bit half float.  A wrapper class is required because
@@ -446,7 +446,7 @@ struct HalfWriter</*IsReal=*/true, double> {
     }
 };
 #endif // _MSC_VER
-#endif // OPENVDB_WITH_OPENEXR_HALF
+#endif // OPENVDB_USE_OPENEXR_HALF
 
 ////////////////////////////////////////
 
@@ -560,9 +560,11 @@ readCompressedValues(std::istream& is, ValueT* destBuf, Index destCount,
 
     // Read in the buffer.
     if (fromHalf != StoredAsHalf::no) {
-#ifdef OPENVDB_WITH_OPENEXR_HALF
+#ifdef OPENVDB_USE_OPENEXR_HALF
         HalfReader<RealToHalf<ValueT>::isReal, ValueT>::read(
             is, (seek ? nullptr : tempBuf), tempCount, compression, delayLoadMeta.get(), leafIndex);
+#else
+        OPENVDB_THROW(IoError, "Half-float is not supported");
 #endif
     } else {
         readData<ValueT>(
@@ -625,9 +627,11 @@ writeCompressedValuesSize(ValueT* srcBuf, Index srcCount,
 
     // Return the buffer size.
     if (toHalf != StoredAsHalf::no) {
-#ifdef OPENVDB_WITH_OPENEXR_HALF
+#ifdef OPENVDB_USE_OPENEXR_HALF
         return HalfWriter<RealToHalf<NonConstValueT>::isReal, NonConstValueT>::writeSize(
             tempBuf, tempCount, compress);
+#else
+        OPENVDB_THROW(IoError, "Half-float is not supported");
 #endif
     } else {
         return writeDataSize<NonConstValueT>(tempBuf, tempCount, compress);
@@ -694,7 +698,7 @@ writeCompressedValues(std::ostream& os, ValueT* srcBuf, Index srcCount,
                     os.write(reinterpret_cast<const char*>(&maskCompressData.inactiveVal[1]), sizeof(ValueT));
                 }
             } else {
-#ifdef OPENVDB_WITH_OPENEXR_HALF
+#ifdef OPENVDB_USE_OPENEXR_HALF
                 // Write one of at most two distinct inactive values.
                 ValueT truncatedVal = static_cast<ValueT>(truncateRealToHalf(maskCompressData.inactiveVal[0]));
                 os.write(reinterpret_cast<const char*>(&truncatedVal), sizeof(ValueT));
@@ -703,6 +707,8 @@ writeCompressedValues(std::ostream& os, ValueT* srcBuf, Index srcCount,
                     truncatedVal = truncateRealToHalf(maskCompressData.inactiveVal[1]);
                     os.write(reinterpret_cast<const char*>(&truncatedVal), sizeof(ValueT));
                 }
+#else
+                OPENVDB_THROW(IoError, "Half-float is not supported");
 #endif
             }
         }
@@ -751,8 +757,10 @@ writeCompressedValues(std::ostream& os, ValueT* srcBuf, Index srcCount,
 
     // Write out the buffer.
     if (toHalf != StoredAsHalf::no) {
-#ifdef OPENVDB_WITH_OPENEXR_HALF
+#ifdef OPENVDB_USE_OPENEXR_HALF
         HalfWriter<RealToHalf<ValueT>::isReal, ValueT>::write(os, tempBuf, tempCount, compress);
+#else
+        OPENVDB_THROW(IoError, "Half-float is not supported");
 #endif
     } else {
         writeData(os, tempBuf, tempCount, compress);

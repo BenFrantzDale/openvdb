@@ -2256,9 +2256,11 @@ RootNode<ChildT>::writeTopology(std::ostream& os, StoredAsHalf toHalf) const
     if (toHalf == StoredAsHalf::no) {
         os.write(reinterpret_cast<const char*>(&mBackground), sizeof(ValueType));
     } else {
-#ifdef OPENVDB_WITH_OPENEXR_HALF
+#ifdef OPENVDB_USE_OPENEXR_HALF
         ValueType truncatedVal = io::truncateRealToHalf(mBackground);
         os.write(reinterpret_cast<const char*>(&truncatedVal), sizeof(ValueType));
+#else
+	OPENVDB_THROW(IoError, "Half-float is not supported");
 #endif
     }
     io::setGridBackgroundValuePtr(os, &mBackground);

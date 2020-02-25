@@ -80,10 +80,10 @@ GridDescriptor::read(std::istream &is)
     // Read in the grid type.
     mGridType = readString(is);
     if (boost::ends_with(mGridType, HALF_FLOAT_TYPENAME_SUFFIX)) {
-#ifdef OPENVDB_WITH_OPENEXR_HALF
+#ifdef OPENVDB_USE_OPENEXR_HALF
         mSaveFloatAsHalf = StoredAsHalf::yes;
 #else
-        throw std::runtime_error("half float not supported");
+        OPENVDB_THROW(IoError, "Half-float is not supported");
 #endif
         boost::erase_last(mGridType, HALF_FLOAT_TYPENAME_SUFFIX);
     }

@@ -1395,8 +1395,10 @@ LeafNode<T,Log2Dim>::readBuffers(std::istream& is, const CoordBBox& clipBBox, St
         Buffer temp;
         for (int i = 1; i < numBuffers; ++i) {
             if (fromHalf != StoredAsHalf::no) {
-#ifdef OPENVDB_WITH_OPENEXR_HALF
+#ifdef OPENVDB_USE_OPENEXR_HALF
                 io::HalfReader<io::RealToHalf<T>::isReal, T>::read(is, temp.mData, SIZE, zipped);
+#else
+                OPENVDB_THROW(IoError, "Half-float is not supported");
 #endif
             } else {
                 io::readData<T>(is, temp.mData, SIZE, zipped);

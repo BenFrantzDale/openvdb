@@ -343,10 +343,10 @@ GridBase::saveFloatAsHalf() const
 {
     if (Metadata::ConstPtr meta = (*this)[META_SAVE_HALF_FLOAT]) {
         if (meta->asBool()) {
-#ifdef OPENVDB_WITH_OPENEXR_HALF
+#ifdef OPENVDB_USE_OPENEXR_HALF
             return StoredAsHalf::yes;
 #else
-            throw std::runtime_error("half type not supported");
+            OPENVDB_THROW(IoError, "Half-float is not supported");
 #endif
         }
     }

@@ -38,7 +38,7 @@ internal::initialize()
     TypedAttributeArray<math::Quat<double>>::registerType();
 
     // Register attribute arrays with truncate compression
-#ifdef OPENVDB_WITH_OPENEXR_HALF
+#ifdef OPENVDB_USE_OPENEXR_HALF
     TypedAttributeArray<float, TruncateCodec>::registerType();
     TypedAttributeArray<math::Vec3<float>, TruncateCodec>::registerType();
 #endif
