@@ -45,7 +45,7 @@ using Vec2f = math::Vec2<float>;
 #ifdef OPENVDB_USE_OPENEXR_HALF
 using Vec2H = math::Vec2<half>;
 #endif
-    using math::Vec2i;
+using math::Vec2i;
 using math::Vec2s;
 using math::Vec2d;
 
@@ -105,7 +105,6 @@ enum class StoredAsHalf {
 #else
 #define OPENVDB_DEFAULT_STORAGE_IF_NO_OPENEXR_HALF = StoredAsHalf::no
 #endif
-
 
 
 // Dummy type for a voxel with a binary mask value, e.g. the active state

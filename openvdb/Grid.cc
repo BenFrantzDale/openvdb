@@ -357,6 +357,11 @@ GridBase::saveFloatAsHalf() const
 void
 GridBase::setSaveFloatAsHalf(StoredAsHalf saveAsHalf)
 {
+#ifndef OPENVDB_USE_OPENEXR_HALF
+  if (saveAsHalf != StoredAsHalf::no) {
+    OPENVDB_THROW(IoError, "Half-float is not supported");
+  }
+#endif
     this->removeMeta(META_SAVE_HALF_FLOAT);
     this->insertMeta(META_SAVE_HALF_FLOAT, BoolMetadata(saveAsHalf != StoredAsHalf::no));
 }
