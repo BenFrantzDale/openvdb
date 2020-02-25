@@ -47,8 +47,10 @@ public:
     CPPUNIT_TEST(testHeader);
     CPPUNIT_TEST(testWriteGrid);
     CPPUNIT_TEST(testWriteMultipleGrids);
+#ifdef OPENVDB_USE_OPENEXR_HALF
     CPPUNIT_TEST(testWriteFloatAsHalf);
-    CPPUNIT_TEST(testWriteInstancedGrids);
+#endif
+  CPPUNIT_TEST(testWriteInstancedGrids);
     CPPUNIT_TEST(testReadGridDescriptors);
     CPPUNIT_TEST(testGridNaming);
     CPPUNIT_TEST(testEmptyFile);
@@ -76,7 +78,9 @@ public:
     void testHeader();
     void testWriteGrid();
     void testWriteMultipleGrids();
+#ifdef OPENVDB_USE_OPENEXR_HALF
     void testWriteFloatAsHalf();
+#endif
     void testWriteInstancedGrids();
     void testReadGridDescriptors();
     void testGridNaming();
@@ -434,6 +438,7 @@ TestFile::testWriteMultipleGrids()
 }
 
 
+#ifdef OPENVDB_USE_OPENEXR_HALF
 void
 TestFile::testWriteFloatAsHalf()
 {
@@ -461,7 +466,7 @@ TestFile::testWriteFloatAsHalf()
     TreeType& tree2 = grid2->tree();
     grid2->setTransform(math::Transform::createLinearTransform(0.2));
     // Flag this grid for 16-bit float output.
-    grid2->setSaveFloatAsHalf(true);
+    grid2->setSaveFloatAsHalf(StoredAsHalf::yes);
     grid2->setName("grid2");
 
     for (int x = 0; x < 40; ++x) {
@@ -503,7 +508,7 @@ TestFile::testWriteFloatAsHalf()
         CPPUNIT_ASSERT_EQUAL(Vec3s(10, 10, 10), btree2.getValue(Coord(10, 10, 10)));
     }
 }
-
+#endif
 
 void
 TestFile::testWriteInstancedGrids()
@@ -1777,12 +1782,13 @@ struct MultiPassLeafNode: public openvdb::tree::LeafNode<T, Log2Dim>, openvdb::i
 
     // Methods in use for reading and writing multiple buffers
 
-    void readBuffers(std::istream& is, const openvdb::CoordBBox&, bool fromHalf = false)
+    void readBuffers(std::istream& is, const openvdb::CoordBBox&,
+                     openvdb::StoredAsHalf fromHalf = openvdb::StoredAsHalf::no)
     {
         this->readBuffers(is, fromHalf);
     }
 
-    void readBuffers(std::istream& is, bool /*fromHalf*/ = false)
+    void readBuffers(std::istream& is, openvdb::StoredAsHalf fromHalf = openvdb::StoredAsHalf::no)
     {
         const openvdb::io::StreamMetadata::Ptr meta = openvdb::io::getStreamMetadataPtr(is);
         if (!meta) {
@@ -1808,7 +1814,7 @@ struct MultiPassLeafNode: public openvdb::tree::LeafNode<T, Log2Dim>, openvdb::i
         }
     }
 
-    void writeBuffers(std::ostream& os, bool /*toHalf*/ = false) const
+    void writeBuffers(std::ostream& os, openvdb::StoredAsHalf /*toHalf*/ = openvdb::StoredAsHalf::no) const
     {
         const openvdb::io::StreamMetadata::Ptr meta = openvdb::io::getStreamMetadataPtr(os);
         if (!meta) {

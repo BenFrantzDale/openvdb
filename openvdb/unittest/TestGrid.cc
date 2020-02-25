@@ -81,14 +81,14 @@ public:
 
     TreeBasePtr copy() const override { return TreeBasePtr(new ProxyTree(*this)); }
 
-    void readTopology(std::istream& is, bool = false) override { is.seekg(0, std::ios::beg); }
-    void writeTopology(std::ostream& os, bool = false) const override { os.seekp(0); }
+    void readTopology(std::istream& is, openvdb::StoredAsHalf = openvdb::StoredAsHalf::no) override { is.seekg(0, std::ios::beg); }
+    void writeTopology(std::ostream& os, openvdb::StoredAsHalf = openvdb::StoredAsHalf::no) const override { os.seekp(0); }
 
     void readBuffers(std::istream& is,
-        const openvdb::CoordBBox&, bool /*saveFloatAsHalf*/=false) override { is.seekg(0); }
+		     const openvdb::CoordBBox&, openvdb::StoredAsHalf /*saveFloatAsHalf*/=openvdb::StoredAsHalf::no) override { is.seekg(0); }
     void readNonresidentBuffers() const override {}
-    void readBuffers(std::istream& is, bool /*saveFloatAsHalf*/=false) override { is.seekg(0); }
-    void writeBuffers(std::ostream& os, bool /*saveFloatAsHalf*/=false) const override
+    void readBuffers(std::istream& is, openvdb::StoredAsHalf /*saveFloatAsHalf*/=openvdb::StoredAsHalf::no) override { is.seekg(0); }
+    void writeBuffers(std::ostream& os, openvdb::StoredAsHalf /*saveFloatAsHalf*/=openvdb::StoredAsHalf::no) const override
         { os.seekp(0, std::ios::beg); }
 
     bool empty() const { return true; }

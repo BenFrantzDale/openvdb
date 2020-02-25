@@ -874,11 +874,11 @@ TestPointDataLeaf::testReadWriteCompression()
         for (Index i = 0; i < count; i++)  srcBuf[i] = i;
 
         {
-            io::writeCompressedValues(ss, srcBuf.get(), count, valueMask, childMask, false);
+	    io::writeCompressedValues(ss, srcBuf.get(), count, valueMask, childMask, StoredAsHalf::no);
 
             std::unique_ptr<PointDataIndex32[]> destBuf(new PointDataIndex32[count]);
 
-            io::readCompressedValues(ss, destBuf.get(), count, valueMask, false);
+            io::readCompressedValues(ss, destBuf.get(), count, valueMask, StoredAsHalf::no);
 
             for (Index i = 0; i < count; i++) {
                 CPPUNIT_ASSERT_EQUAL(srcBuf.get()[i], destBuf.get()[i]);
@@ -895,7 +895,7 @@ TestPointDataLeaf::testReadWriteCompression()
             io::setStreamMetadataPtr(ss, streamMetadata);
 
             io::writeCompressedValuesSize(ss, srcBuf.get(), count);
-            io::writeCompressedValues(ss, srcBuf.get(), count, valueMask, childMask, false);
+            io::writeCompressedValues(ss, srcBuf.get(), count, valueMask, childMask, StoredAsHalf::no);
             int magic = 1924674;
             ss.write(reinterpret_cast<const char*>(&magic), sizeof(int));
 
@@ -907,7 +907,7 @@ TestPointDataLeaf::testReadWriteCompression()
 
             CPPUNIT_ASSERT_EQUAL(size_t(size), referenceBytes);
 
-            io::readCompressedValues(ss, destBuf.get(), count, valueMask, false);
+            io::readCompressedValues(ss, destBuf.get(), count, valueMask, StoredAsHalf::no);
 
             int magic2;
             ss.read(reinterpret_cast<char*>(&magic2), sizeof(int));
@@ -927,7 +927,7 @@ TestPointDataLeaf::testReadWriteCompression()
             io::setStreamMetadataPtr(ss, streamMetadata);
 
             io::writeCompressedValuesSize(ss, srcBuf.get(), count);
-            io::writeCompressedValues(ss, srcBuf.get(), count, valueMask, childMask, false);
+            io::writeCompressedValues(ss, srcBuf.get(), count, valueMask, childMask, StoredAsHalf::no);
             int magic = 3829250;
             ss.write(reinterpret_cast<const char*>(&magic), sizeof(int));
 
@@ -941,7 +941,7 @@ TestPointDataLeaf::testReadWriteCompression()
             streamMetadata->setPass(size);
 
             PointDataIndex32* forceSeek = nullptr;
-            io::readCompressedValues(ss, forceSeek, count, valueMask, false);
+            io::readCompressedValues(ss, forceSeek, count, valueMask, StoredAsHalf::no);
 
             int magic2;
             ss.read(reinterpret_cast<char*>(&magic2), sizeof(int));
@@ -969,28 +969,28 @@ TestPointDataLeaf::testReadWriteCompression()
             std::unique_ptr<PointDataIndex32[]> destBuf(new PointDataIndex32[count]);
 
             ss.str("");
-            io::writeCompressedValues(ss, srcBuf.get(), count, valueMask, childMask, false);
+            io::writeCompressedValues(ss, srcBuf.get(), count, valueMask, childMask, StoredAsHalf::no);
             CPPUNIT_ASSERT_THROW(io::readCompressedValues(ss, destBuf.get(),
-                count+1, valueMask, false), RuntimeError);
+                count+1, valueMask, StoredAsHalf::no), RuntimeError);
 
             ss.str("");
-            io::writeCompressedValues(ss, srcBuf.get(), count, valueMask, childMask, false);
+            io::writeCompressedValues(ss, srcBuf.get(), count, valueMask, childMask, StoredAsHalf::no);
             CPPUNIT_ASSERT_THROW(io::readCompressedValues(ss, destBuf.get(),
-                1, valueMask, false), RuntimeError);
+                1, valueMask, StoredAsHalf::no), RuntimeError);
         }
 #endif
 
         { // seek
             ss.str("");
 
-            io::writeCompressedValues(ss, srcBuf.get(), count, valueMask, childMask, false);
+            io::writeCompressedValues(ss, srcBuf.get(), count, valueMask, childMask, StoredAsHalf::no);
 
             int test(10772832);
             ss.write(reinterpret_cast<const char*>(&test), sizeof(int));
 
             PointDataIndex32* buf = nullptr;
 
-            io::readCompressedValues(ss, buf, count, valueMask, false);
+            io::readCompressedValues(ss, buf, count, valueMask, StoredAsHalf::no);
             int test2;
             ss.read(reinterpret_cast<char*>(&test2), sizeof(int));
 
@@ -1006,11 +1006,11 @@ TestPointDataLeaf::testReadWriteCompression()
 
         for (Index i = 0; i < count; i++)  srcBuf[i] = i;
 
-        io::writeCompressedValues(ss, srcBuf.get(), count, valueMask, childMask, false);
+        io::writeCompressedValues(ss, srcBuf.get(), count, valueMask, childMask, StoredAsHalf::no);
 
         std::unique_ptr<PointDataIndex32[]> destBuf(new PointDataIndex32[count]);
 
-        io::readCompressedValues(ss, destBuf.get(), count, valueMask, false);
+        io::readCompressedValues(ss, destBuf.get(), count, valueMask, StoredAsHalf::no);
 
         for (Index i = 0; i < count; i++) {
             CPPUNIT_ASSERT_EQUAL(srcBuf.get()[i], destBuf.get()[i]);
@@ -1022,9 +1022,9 @@ TestPointDataLeaf::testReadWriteCompression()
         PointDataIndex32* buf = nullptr;
         Index count = std::numeric_limits<uint16_t>::max();
 
-        CPPUNIT_ASSERT_THROW(io::writeCompressedValues(ss, buf, count, valueMask, childMask, false),
+        CPPUNIT_ASSERT_THROW(io::writeCompressedValues(ss, buf, count, valueMask, childMask, StoredAsHalf::no),
             IoError);
-        CPPUNIT_ASSERT_THROW(io::readCompressedValues(ss, buf, count, valueMask, false), IoError);
+        CPPUNIT_ASSERT_THROW(io::readCompressedValues(ss, buf, count, valueMask, StoredAsHalf::no), IoError);
     }
 }
 

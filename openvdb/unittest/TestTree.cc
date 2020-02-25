@@ -39,7 +39,9 @@ public:
 
     CPPUNIT_TEST_SUITE(TestTree);
     CPPUNIT_TEST(testChangeBackground);
+#ifdef OPENVDB_USE_OPENEXR_HALF
     CPPUNIT_TEST(testHalf);
+#endif
     CPPUNIT_TEST(testValues);
     CPPUNIT_TEST(testSetValue);
     CPPUNIT_TEST(testSetValueOnly);
@@ -77,7 +79,9 @@ public:
     CPPUNIT_TEST_SUITE_END();
 
     void testChangeBackground();
+#ifdef OPENVDB_USE_OPENEXR_HALF
     void testHalf();
+#endif
     void testValues();
     void testSetValue();
     void testSetValueOnly();
@@ -114,7 +118,9 @@ public:
     void testInternalNode();
 
 private:
+#ifdef OPENVDB_USE_OPENEXR_HALF
     template<typename TreeType> void testWriteHalf();
+#endif
     template<typename TreeType> void doTestMerge(openvdb::MergePolicy);
     template<typename TreeTypeA, typename TreeTypeB> void doTestTopologyDifference();
 };
@@ -180,6 +186,8 @@ TestTree::testChangeBackground()
 }
 
 
+
+#ifdef OPENVDB_USE_OPENEXR_HALF
 void
 TestTree::testHalf()
 {
@@ -195,7 +203,6 @@ TestTree::testHalf()
     testWriteHalf<openvdb::Int32Tree>();
     testWriteHalf<openvdb::Int64Tree>();
 }
-
 
 template<class TreeType>
 void
@@ -214,14 +221,14 @@ TestTree::testWriteHalf()
 
     // Write grid blocks in both float and half formats.
     std::ostringstream outFull(std::ios_base::binary);
-    grid.setSaveFloatAsHalf(false);
+    grid.setSaveFloatAsHalf(openvdb::StoredAsHalf::no);
     grid.writeBuffers(outFull);
     outFull.flush();
     const size_t fullBytes = outFull.str().size();
     CPPUNIT_ASSERT_MESSAGE("wrote empty full float buffers", fullBytes > 0);
 
     std::ostringstream outHalf(std::ios_base::binary);
-    grid.setSaveFloatAsHalf(true);
+    grid.setSaveFloatAsHalf(openvdb::StoredAsHalf::yes);
     grid.writeBuffers(outHalf);
     outHalf.flush();
     const size_t halfBytes = outHalf.str().size();
@@ -244,7 +251,7 @@ TestTree::testWriteHalf()
     // is identical to the original half float file.
     {
         openvdb::Grid<TreeType> gridCopy(grid);
-        gridCopy.setSaveFloatAsHalf(true);
+        gridCopy.setSaveFloatAsHalf(openvdb::StoredAsHalf::yes);
         std::istringstream is(outHalf.str(), std::ios_base::binary);
 
         // Since the input stream doesn't include a VDB header with file format version info,
@@ -261,7 +268,7 @@ TestTree::testWriteHalf()
             outHalf.str() == outDiff.str());
     }
 }
-
+#endif
 
 void
 TestTree::testValues()

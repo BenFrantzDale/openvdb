@@ -277,7 +277,7 @@ void StreamMetadata::setLibraryVersion(VersionId v)     { mImpl->mLibraryVersion
 void StreamMetadata::setCompression(uint32_t c)         { mImpl->mCompression = c; }
 void StreamMetadata::setGridClass(uint32_t c)           { mImpl->mGridClass = c; }
 void StreamMetadata::setBackgroundPtr(const void* ptr)  { mImpl->mBackgroundPtr = ptr; }
-void StreamMetadata::setHalfFloat(StoredAsHalf b)               { mImpl->mHalfFloat = b; }
+void StreamMetadata::setHalfFloat(StoredAsHalf b)       { mImpl->mHalfFloat = b; }
 void StreamMetadata::setWriteGridStats(bool b)          { mImpl->mWriteGridStats = b; }
 void StreamMetadata::setSeekable(bool b)                { mImpl->mSeekable = b; }
 void StreamMetadata::setCountingPasses(bool b)          { mImpl->mCountingPasses = b; }
@@ -375,7 +375,7 @@ struct PopulateDelayedLoadMetadataOp
                     size_t sizeBytes(8);
                     size_t compressedSize = io::writeCompressedValuesSize(
                         leaf.buffer().data(), LeafT::SIZE,
-                        leaf.valueMask(), maskCompressData.metadata, compression, saveFloatAsHalf);
+                        leaf.valueMask(), maskCompressData.metadata, saveFloatAsHalf, compression);
                     metadata.setCompressedSize(idx, compressedSize+sizeBytes);
                 }
             }

@@ -465,6 +465,8 @@ namespace attribute_traits
     template <typename T> struct TruncateTrait { };
 #ifdef OPENVDB_USE_OPENEXR_HALF
     template <> struct TruncateTrait<float> { using Type = half; };
+#else
+    template <> struct TruncateTrait<float> { using Type = float; }; // If half is disabled, fall back to float->float.
 #endif
     template <> struct TruncateTrait<int> { using Type = short; };
 

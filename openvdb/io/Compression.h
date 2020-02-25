@@ -595,8 +595,7 @@ readCompressedValues(std::istream& is, ValueT* destBuf, Index destCount,
 template<typename ValueT, typename MaskT>
 inline size_t
 writeCompressedValuesSize(ValueT* srcBuf, Index srcCount,
-    const MaskT& valueMask, uint8_t maskMetadata, uint32_t compress,
-                          StoredAsHalf toHalf OPENVDB_DEFAULT_STORAGE_IF_NO_OPENEXR_HALF)
+			  const MaskT& valueMask, uint8_t maskMetadata, StoredAsHalf toHalf, uint32_t compress)
 {
     using NonConstValueT = typename std::remove_const<ValueT>::type;
 
