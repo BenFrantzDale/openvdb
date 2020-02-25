@@ -56,7 +56,12 @@ GridDescriptor::writeHeader(std::ostream &os) const
     writeString(os, mUniqueName);
 
     Name gridType = mGridType;
-    if (mSaveFloatAsHalf != StoredAsHalf::no) gridType += HALF_FLOAT_TYPENAME_SUFFIX;
+    if (mSaveFloatAsHalf != StoredAsHalf::no) {
+      gridType += HALF_FLOAT_TYPENAME_SUFFIX;
+#ifndef OPENVDB_USE_OPENEXR_HALF
+      OPENVDB_THROW(IoError, "Half-float is not supported");
+#endif
+    }
     writeString(os, gridType);
 
     writeString(os, mInstanceParentName);
