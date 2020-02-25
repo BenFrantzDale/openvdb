@@ -86,6 +86,10 @@ option(USE_EXR [=[
 Use OpenEXR while building the core openvdb library. If OPENVDB_BUILD_CORE is OFF, CMake attempts to query the located
 openvdb build configuration to decide on OpenEXR support. You may set this to on to force OpenEXR to be used if you
 know it to be required.]=] OFF)
+option(USE_OPENEXR_HALF [=[
+Use OpenEXR's half.h half-precision floating-point library while building openvdb components. You may set this to
+off to remove the dependency on OpenEXR if you know you don't need float16 support.]=] ON)
+
 cmake_dependent_option(OPENVDB_DISABLE_BOOST_IMPLICIT_LINKING
   "Disable the implicit linking of Boost libraries on Windows" ON "WIN32" OFF)
 option(USE_CCACHE "Build using Ccache if found on the path" ON)

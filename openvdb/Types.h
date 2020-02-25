@@ -6,7 +6,6 @@
 
 #include "version.h"
 #include "Platform.h"
-//#define OPENVDB_USE_OPENEXR_HALF
 #ifdef OPENVDB_USE_OPENEXR_HALF
 #include <OpenEXR/half.h>
 #endif
