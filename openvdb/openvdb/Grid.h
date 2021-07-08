@@ -630,6 +630,10 @@ public:
     explicit Grid(TreePtrType);
     /// Deep copy another grid's metadata, transform and tree.
     Grid(const Grid&);
+
+    /// Move-copy
+    Grid(Grid&&) = default;
+
     /// @brief Deep copy the metadata, transform and tree of another grid whose tree
     /// configuration is the same as this grid's but whose value type is different.
     /// Cast the other grid's values to this grid's value type.
@@ -647,6 +651,9 @@ public:
 
     /// Disallow assignment, since it wouldn't be obvious whether the copy is deep or shallow.
     Grid& operator=(const Grid&) = delete;
+
+    /// Allow move-assignment:
+    Grid& operator=(Grid&&) = default;
 
     /// @name Copying
     /// @{

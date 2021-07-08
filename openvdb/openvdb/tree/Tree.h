@@ -41,7 +41,10 @@ public:
 
     TreeBase() = default;
     TreeBase(const TreeBase&) = default;
+    TreeBase(TreeBase&&) = default;
     TreeBase& operator=(const TreeBase&) = delete; // disallow assignment
+    TreeBase& operator=(TreeBase&&) = default;
+
     virtual ~TreeBase() = default;
 
     /// Return the name of this tree's type.

@@ -154,6 +154,23 @@ TEST_F(TestGrid, testGetGrid)
     EXPECT_TRUE(!gridConstPtrCast<DoubleGrid>(constGrid));
 }
 
+TEST_F(TestGrid, testGridMoveSemantics)
+{
+    using namespace openvdb;
+
+    auto grid = FloatGrid{/*bg=*/0.0};
+    auto moved = std::move(grid);
+
+    EXPECT_FALSE(grid.baseTreePtr());
+    EXPECT_TRUE(moved.baseTreePtr());
+
+    // Assignment:
+    grid = std::move(moved);
+    EXPECT_TRUE(grid.baseTreePtr());
+    EXPECT_FALSE(moved.baseTreePtr());
+
+    auto tree = grid.tree();
+}
 
 TEST_F(TestGrid, testIsType)
 {
