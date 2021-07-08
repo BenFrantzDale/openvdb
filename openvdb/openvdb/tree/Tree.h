@@ -203,11 +203,14 @@ public:
     Tree() {}
 
     Tree& operator=(const Tree&) = delete; // disallow assignment
+    Tree& operator=(Tree&&) = default; // disallow assignment
 
     /// Deep copy constructor
     Tree(const Tree& other): TreeBase(other), mRoot(other.mRoot)
     {
     }
+
+    Tree(Tree&&) = default;
 
     /// @brief Value conversion deep copy constructor
     ///

@@ -240,6 +240,26 @@ TEST_F(TestTree, testValues)
     }
 }
 
+TEST_F(TestTree, testTreeMoveSemantics)
+{
+    const float background = 5.0f;
+    using TreeType = openvdb::FloatTree;
+    auto tree = TreeType{background};
+    tree.setValue(openvdb::Coord{0,0,0}, 42.0f); // Make it non-trivial.
+    EXPECT_TRUE(tree.leafCount() == 1);
+
+    {
+        TreeType::RootNodeType movedRoot = std::move(tree.root());
+        EXPECT_TRUE(tree.leafCount() == 0);
+        tree.root() = std::move(movedRoot);
+        EXPECT_TRUE(tree.leafCount() == 1);
+    }
+    auto moved = std::move(tree);
+    EXPECT_TRUE(tree.leafCount() == 0);
+    tree = std::move(moved);
+    EXPECT_TRUE(tree.leafCount() == 1);
+}
+
 
 TEST_F(TestTree, testSetValue)
 {
